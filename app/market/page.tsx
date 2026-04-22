@@ -1,0 +1,1 @@
+"use client"; export { MarketPage as default } from "../other-pages";
