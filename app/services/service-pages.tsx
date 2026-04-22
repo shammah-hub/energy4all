@@ -1,6 +1,6 @@
 "use client";
+import { Footer, Navbar, SERVICES, useInView } from "@/components/shared";
 import { useRef } from "react";
-import { Navbar, Footer, useInView, SERVICES } from "../../../components/shared";
 
 // ─── Services Overview ────────────────────────────────────────────────────────
 export function ServicesPage() {
