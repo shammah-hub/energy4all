@@ -3,7 +3,7 @@ import { Navbar, Footer } from "../components/shared";
 export default function NotFound() {
   return (
     <>
-      <Navbar light />
+      <Navbar  />
       <main className="min-h-screen bg-[#0a1628] flex items-center justify-center px-6">
         <div className="text-center">
           <p className="font-black text-white/5 select-none" style={{ fontSize: "clamp(120px,25vw,300px)", fontFamily: "'Helvetica Neue',sans-serif", lineHeight: 1 }}>404</p>

@@ -1,369 +1,490 @@
 "use client";
-import { Navbar, Footer, useInView, STATS, SERVICES } from "@/components/shared";
-import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { Navbar, Footer, IMG, SERVICES } from "@/components/shared";
+import { ArrowUpRight, Shield, Landmark, Truck, Leaf, Zap, CheckCircle2 } from "lucide-react";
 
-const MARQUEE = ["RENEWABLE ENERGY", "OIL & GAS", "LOGISTICS", "AGRICULTURE", "AFRICA", "SUSTAINABLE FUTURE", "INVESTMENT ADVISORY"];
-
-// High-quality images mapped to each service
-const SERVICE_IMAGES: Record<string, string> = {
-  "energy-infrastructure": "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80",
-  "investment-financial": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80",
-  "legal-regulatory": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80",
-  "supply-chain": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
-  "agribusiness": "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&q=80",
-  "oil-gas": "https://images.unsplash.com/photo-1518704618243-b719e5d5f2b8?w=800&q=80",
+const fadeInUp = {
+  initial: { opacity: 0, y: 40 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+  transition: {
+    duration: 0.8,
+    ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+  },
 };
 
-// Fallback image per index if slug doesn't match
-const FALLBACK_IMAGES = [
-  "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80",
-  "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80",
-  "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80",
-  "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
-  "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&q=80",
-  "https://images.unsplash.com/photo-1518704618243-b719e5d5f2b8?w=800&q=80",
-];
-
 export default function HomePage() {
-  const [loaded, setLoaded] = useState(false);
-  const statsRef = useRef<HTMLElement>(null);
-  const statsInView = useInView(statsRef);
-  const servicesRef = useRef<HTMLElement>(null);
-  const servicesInView = useInView(servicesRef);
-  const whyRef = useRef<HTMLElement>(null);
-  const whyInView = useInView(whyRef);
-
-  useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
-
   return (
-    <>
-      <style>{`
-        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
-        @keyframes pulse-glow { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
-        @keyframes counter { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .service-card-img { transition: transform 0.6s ease; }
-        .service-card:hover .service-card-img { transform: scale(1.07); }
-        .why-img-overlay { background: linear-gradient(to right, rgba(13,31,60,0.85) 0%, rgba(13,31,60,0.4) 60%, transparent 100%); }
-      `}</style>
-      <Navbar />
+    <div className="bg-white text-slate-900 selection:bg-emerald-100 selection:text-emerald-900">
+      <Navbar transparent={true} />
 
       <main>
-        {/* ── HERO ── */}
-        <section className="relative min-h-screen bg-[#0a1628] flex items-center overflow-hidden">
-          {/* HERO BACKGROUND IMAGE with lighter overlay */}
-          <div className="absolute inset-0 z-0">
-            <img
-              src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=1800&q=80"
-              alt="Solar energy field"
-              className="w-full h-full object-cover"
-            />
-            {/* Lightened: was /80 → /50, gradient was /95//70//40 → /75//40//15 */}
-            <div className="absolute inset-0 bg-[#0a1628]/50" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/75 via-[#0a1628]/40 to-[#0a1628]/15" />
-          </div>
+        {/* ── SECTION 1: FULL-BLEED HERO
+            IMG.hero — wide cinematic solar/wind landscape.
+            Dark gradient overlay, white text. Transparent navbar floats on top.
+            Split: headline left, portrait worker image right bleeds to edge.
+        ── */}
+        <section className="relative min-h-[100vh] flex items-end bg-slate-900 pb-20 pt-40 overflow-hidden">
+          {/* Full-bleed background */}
+          <img
+            src={IMG.hero}
+            className="absolute inset-0 w-full h-full object-cover opacity-50"
+            style={{ objectPosition: "50% 40%" }}
+            alt=""
+            aria-hidden="true"
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-slate-900/20 pointer-events-none" />
+          {/* Emerald radial glow */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ backgroundImage: "radial-gradient(ellipse at 15% 90%, rgba(16,185,129,0.25) 0%, transparent 55%)" }}
+          />
 
-          {/* Animated background grid */}
-          <div className="absolute inset-0 z-[1] opacity-[0.04]"
-            style={{ backgroundImage: "linear-gradient(rgba(34,197,94,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,0.5) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+          <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
 
-          {/* Glowing orbs */}
-          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#22c55e]/10 rounded-full blur-3xl z-[1]" style={{ animation: "pulse-glow 4s ease-in-out infinite" }} />
-          <div className="absolute bottom-1/4 left-1/3 w-64 h-64 bg-[#0ea5e9]/10 rounded-full blur-3xl z-[1]" style={{ animation: "pulse-glow 6s ease-in-out infinite 2s" }} />
+              {/* Left: headline */}
+              <div className="lg:col-span-7">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="inline-flex items-center gap-3 px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full mb-8"
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-emerald-300 font-bold text-[10px] tracking-[0.2em] uppercase">
+                    Energy 4 All Limited • Abuja, Nigeria
+                  </span>
+                </motion.div>
 
-          {/* Large background text */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-[1]">
-            <span className="font-black text-white/[0.02] select-none whitespace-nowrap"
-              style={{ fontSize: "clamp(120px,20vw,280px)", fontFamily: "'Helvetica Neue',sans-serif", letterSpacing: "-0.04em" }}>
-              ENERGY
-            </span>
-          </div>
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-[clamp(3rem,8vw,6.5rem)] font-light leading-[1] tracking-tighter mb-8 text-white"
+                >
+                  Access to Energy <br />
+                  is a{" "}
+                  <span className="italic font-serif text-emerald-400 underline decoration-emerald-700 underline-offset-8">
+                    Right.
+                  </span>
+                </motion.h1>
 
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-32 w-full">
-            <div className="max-w-4xl">
-              {/* Eyebrow */}
-              <div className={`flex items-center gap-3 mb-8 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-                style={{ transitionDelay: "200ms" }}>
-                <div className="w-8 h-px bg-[#22c55e]" />
-                <span className="text-[#22c55e] text-[10px] tracking-[0.4em] uppercase font-bold">Advisory & Consultancy</span>
+                <motion.p
+                  {...fadeInUp}
+                  className="text-slate-300 text-xl font-light leading-relaxed mb-10 max-w-xl"
+                >
+                  A multi-disciplinary advisory firm delivering sustainable solutions across
+                  Africa's Renewable Energy, Logistics, and Agriculture sectors.
+                </motion.p>
+
+                <motion.div {...fadeInUp} className="flex flex-wrap gap-4">
+                  <a
+                    href="/contact"
+                    className="px-10 py-5 bg-emerald-500 text-white rounded-full font-bold text-xs uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-900/40"
+                  >
+                    Request Strategy Session
+                  </a>
+                  <a
+                    href="/about"
+                    className="px-10 py-5 border border-white/20 text-white rounded-full font-bold text-xs uppercase tracking-widest hover:border-white/50 transition-all"
+                  >
+                    Our Mandate
+                  </a>
+                </motion.div>
               </div>
 
-              {/* Main headline */}
-              <h1 className={`font-black text-white leading-none mb-8 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-                style={{ fontSize: "clamp(44px,8vw,100px)", fontFamily: "'Helvetica Neue',sans-serif", letterSpacing: "-0.03em", transitionDelay: "350ms" }}>
-                POWERING<br />
-                <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #22c55e, #0ea5e9)" }}>
-                  AFRICA'S
-                </span><br />
-                FUTURE.
-              </h1>
-
-              {/* Sub */}
-              <p className={`text-white/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mb-12 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-                style={{ transitionDelay: "500ms" }}>
-                Multi-disciplinary advisory and consultancy delivering innovative, sustainable solutions across Renewable Energy, Oil & Gas, Logistics, and Agriculture.
-              </p>
-
-              {/* CTAs */}
-              <div className={`flex flex-col sm:flex-row gap-4 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-                style={{ transitionDelay: "650ms" }}>
-                <a href="/services"
-                  className="group inline-flex items-center justify-center gap-3 bg-[#22c55e] text-white px-8 py-4 text-[10px] font-bold tracking-widest uppercase hover:bg-[#16a34a] transition-all duration-200">
-                  Explore Services
-                  <svg className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </a>
-                <a href="/about"
-                  className="inline-flex items-center justify-center gap-3 border border-white/20 text-white px-8 py-4 text-[10px] font-bold tracking-widest uppercase hover:border-white/50 hover:bg-white/5 transition-all duration-200">
-                  Who We Are
-                </a>
-              </div>
-            </div>
-
-            {/* Floating service pills */}
-            <div className={`hidden lg:flex gap-3 mt-20 flex-wrap transition-all duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
-              style={{ transitionDelay: "800ms" }}>
-              {SERVICES.map((s, i) => (
-                <a key={s.slug} href={`/services/${s.slug}`}
-                  className="flex items-center gap-2 border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-2.5 hover:border-[#22c55e]/50 hover:bg-white/10 transition-all duration-200 group"
-                  style={{ animation: `float ${3 + i * 0.3}s ease-in-out infinite ${i * 0.2}s` }}>
-                  <span className="text-sm">{s.icon}</span>
-                  <span className="text-[10px] text-white/60 group-hover:text-white font-semibold tracking-wider uppercase transition-colors">{s.short}</span>
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Scroll indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
-            <div className="w-5 h-8 border border-white/20 rounded-full flex justify-center pt-1.5">
-              <div className="w-1 h-2 bg-[#22c55e] rounded-full animate-bounce" />
+              {/* Right: floating worker portrait card */}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] }}
+                className="lg:col-span-5 hidden lg:block self-end"
+              >
+                <div className="aspect-[3/4] rounded-t-[3rem] overflow-hidden shadow-[0_-40px_80px_-20px_rgba(0,0,0,0.4)]">
+                  <img
+                    src={IMG.heroWorker}
+                    className="w-full h-full object-cover"
+                    alt="Energy professional"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent" />
+                </div>
+              </motion.div>
             </div>
           </div>
         </section>
 
-        {/* ── MARQUEE ── */}
-        <div className="bg-[#22c55e] py-4 overflow-hidden">
-          <div className="flex whitespace-nowrap" style={{ animation: "marquee 25s linear infinite" }}>
-            {[...MARQUEE, ...MARQUEE].map((w, i) => (
-              <span key={i} className="inline-flex items-center gap-6 mx-6">
-                <span className="text-[10px] tracking-[0.4em] font-black text-white uppercase">{w}</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
-              </span>
-            ))}
-          </div>
+        {/* ── TRANSITION STRIP: ruralSolar ── */}
+        <div className="relative h-44 overflow-hidden">
+          <img
+            src={IMG.ruralSolar}
+            className="w-full h-full object-cover"
+            style={{ objectPosition: "50% 60%" }}
+            alt="Rural solar installation"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 to-white" />
         </div>
 
-        {/* ── STATS ── with background image */}
-        <section ref={statsRef} className="relative bg-[#0d1f3c] py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
-          {/* Lightened: opacity-10 → opacity-25, overlay /80 → /55 */}
-          <div className="absolute inset-0 z-0">
-            <img
-              src="https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1600&q=60"
-              alt="Africa aerial"
-              className="w-full h-full object-cover opacity-25"
-            />
-            <div className="absolute inset-0 bg-[#0d1f3c]/55" />
-          </div>
+        {/* ── SECTION 2: ADVISORY PILLARS
+            Light background. Left sticky editorial text. Right 2-col service cards
+            each with their own IMG from shared — svcEnergy, svcLegal, svcFinance,
+            svcAgri, svcLogistics.
+        ── */}
+        <section className="py-32 bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
 
-          <div className="relative z-10 max-w-7xl mx-auto">
-            <div className={`text-center mb-16 transition-all duration-700 ${statsInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <p className="text-[10px] tracking-[0.4em] text-[#22c55e] uppercase mb-4">— The Opportunity</p>
-              <h2 className="font-black text-white leading-none"
-                style={{ fontSize: "clamp(32px,5vw,64px)", fontFamily: "'Helvetica Neue',sans-serif", letterSpacing: "-0.02em" }}>
-                WHY AFRICA.<br /><span className="text-white/30">WHY NOW.</span>
-              </h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {STATS.map((s, i) => (
-                <div key={i}
-                  className={`border border-white/10 p-6 sm:p-8 text-center hover:border-[#22c55e]/40 transition-all duration-300 group transition-all duration-700 ${statsInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-                  style={{ transitionDelay: `${i * 100}ms` }}>
-                  <p className="font-black text-[#22c55e] mb-3"
-                    style={{ fontSize: "clamp(28px,4vw,52px)", fontFamily: "'Helvetica Neue',sans-serif", letterSpacing: "-0.02em" }}>
-                    {s.num}
-                  </p>
-                  <p className="text-white/40 text-xs leading-relaxed font-light">{s.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── SERVICES ── with per-card images */}
-        <section ref={servicesRef} className="bg-[#0a1628] py-20 sm:py-28 px-4 sm:px-6">
-          <div className="max-w-7xl mx-auto">
-            <div className={`flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 transition-all duration-700 ${servicesInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <div>
-                <p className="text-[10px] tracking-[0.4em] text-[#22c55e] uppercase mb-4">— What We Do</p>
-                <h2 className="font-black text-white leading-none"
-                  style={{ fontSize: "clamp(32px,5vw,64px)", fontFamily: "'Helvetica Neue',sans-serif", letterSpacing: "-0.02em" }}>
-                  OUR<br /><span className="text-white/30">SERVICES</span>
+              {/* Sticky left column */}
+              <motion.div {...fadeInUp} className="lg:sticky lg:top-32">
+                <span className="text-emerald-600 font-bold text-xs tracking-widest uppercase mb-6 block">
+                  What We Do
+                </span>
+                <h2 className="text-4xl font-light tracking-tight text-slate-900 mb-6 leading-tight">
+                  Expertise meets{" "}
+                  <span className="italic font-serif">Innovation.</span>
                 </h2>
-              </div>
-              <a href="/services"
-                className="text-[10px] tracking-[0.3em] uppercase font-bold text-white/40 hover:text-white transition-colors border-b border-white/20 pb-1 self-start md:self-auto">
-                View All Services
-              </a>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {SERVICES.map((s, i) => {
-                const imgSrc = SERVICE_IMAGES[s.slug] || FALLBACK_IMAGES[i % FALLBACK_IMAGES.length];
-                return (
-                  <a key={s.slug} href={`/services/${s.slug}`}
-                    className={`service-card group relative border border-white/10 overflow-hidden hover:border-[#22c55e]/40 transition-all duration-300 block transition-all duration-700 ${servicesInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-                    style={{ transitionDelay: `${i * 80}ms` }}>
-
-                    {/* Card image — lightened gradient so image is more visible */}
-                    <div className="relative h-44 overflow-hidden">
-                      <img
-                        src={imgSrc}
-                        alt={s.short}
-                        className="service-card-img w-full h-full object-cover"
-                      />
-                      {/* Lightened: from-[#0a1628] via-[#0a1628]/40 → via-[#0a1628]/20, transparent stays */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628]/80 via-[#0a1628]/20 to-transparent" />
-                      {/* Number badge */}
-                      <span className="absolute top-4 right-4 font-black text-white/20 text-4xl select-none"
-                        style={{ fontFamily: "'Helvetica Neue',sans-serif" }}>
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                    </div>
-
-                    {/* Card content */}
-                    <div className="p-8 bg-[#0a1628] hover:bg-white/5 transition-colors duration-300">
-                      <div className="text-2xl mb-4">{s.icon}</div>
-                      <h3 className="font-black text-white text-lg mb-3 leading-snug group-hover:text-[#22c55e] transition-colors"
-                        style={{ fontFamily: "'Helvetica Neue',sans-serif", letterSpacing: "-0.01em" }}>
-                        {s.short}
-                      </h3>
-                      <p className="text-white/40 text-sm leading-relaxed font-light mb-6">{s.summary}</p>
-                      <div className="flex items-center gap-2 text-[10px] text-[#22c55e] tracking-widest uppercase font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                        Learn More
-                        <svg className="w-3.5 h-3.5 translate-x-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                      </div>
-                    </div>
-                  </a>
-                );
-              })}
-
-              {/* CTA card */}
-              <a href="/contact"
-                className="group border border-[#22c55e]/30 bg-[#22c55e]/5 p-8 hover:bg-[#22c55e]/10 transition-all duration-300 flex flex-col justify-between block">
-                <div>
-                  <p className="text-[10px] tracking-[0.3em] text-[#22c55e] uppercase font-bold mb-4">Start a Project</p>
-                  <h3 className="font-black text-white text-2xl leading-none mb-4"
-                    style={{ fontFamily: "'Helvetica Neue',sans-serif", letterSpacing: "-0.02em" }}>
-                    READY TO<br />POWER UP?
-                  </h3>
-                  <p className="text-white/40 text-sm font-light leading-relaxed">
-                    Let's discuss how we can support your next energy or infrastructure project across Africa.
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 text-[#22c55e] text-[10px] font-bold tracking-widest uppercase mt-8 group-hover:gap-4 transition-all">
-                  Get In Touch
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </div>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* ── WHY US ── with full-bleed split image */}
-        <section ref={whyRef} className="bg-[#0d1f3c] py-20 sm:py-28 px-4 sm:px-6">
-          <div className="max-w-7xl mx-auto">
-            <div className={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center transition-all duration-700 ${whyInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <div>
-                <p className="text-[10px] tracking-[0.4em] text-[#22c55e] uppercase mb-6">— Our Value</p>
-                <h2 className="font-black text-white leading-none mb-8"
-                  style={{ fontSize: "clamp(36px,5vw,72px)", fontFamily: "'Helvetica Neue',sans-serif", letterSpacing: "-0.03em" }}>
-                  ENERGY IS A<br /><span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #22c55e, #0ea5e9)" }}>
-                    RIGHT, NOT<br />A PRIVILEGE.
-                  </span>
-                </h2>
-                <p className="text-white/50 text-base leading-relaxed font-light mb-8">
-                  At Energy 4 All, we believe every community deserves access to clean, reliable, and inclusive energy solutions. From project inception to operation and maintenance, our team delivers measurable value.
+                <p className="text-slate-500 font-light text-lg mb-8 leading-relaxed">
+                  We provide the legal, financial, and technical scaffolding required for
+                  high-impact projects in Africa's dynamic markets.
                 </p>
-                <a href="/about"
-                  className="inline-flex items-center gap-3 text-[#22c55e] text-[10px] tracking-[0.3em] uppercase font-bold border-b border-[#22c55e]/40 pb-2 hover:border-[#22c55e] transition-colors">
-                  Our Story
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
+                <div className="space-y-4 mb-10">
+                  {["Energy Transition", "Infrastructure Law", "ESG Integration"].map((check) => (
+                    <div key={check} className="flex items-center gap-3 text-slate-700 font-medium">
+                      <CheckCircle2 size={18} className="text-emerald-500" />
+                      <span className="text-sm uppercase tracking-wider">{check}</span>
+                    </div>
+                  ))}
+                </div>
+                <a
+                  href="/services"
+                  className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-bold text-slate-900 group"
+                >
+                  All Services{" "}
+                  <ArrowUpRight
+                    size={16}
+                    className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+                  />
                 </a>
-              </div>
+              </motion.div>
 
-              {/* Right col: 2x2 image grid */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* Service cards — each with its own image */}
+              <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                 {[
-                  { img: "https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80", title: "Multi-Sector", body: "Deep expertise spanning energy, legal, finance, logistics and agribusiness." },
-                  { img: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=80", title: "Africa-First", body: "Built for the continent's unique challenges, opportunities and market dynamics." },
-                  { img: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80", title: "End-to-End", body: "From strategy and feasibility through to execution and operations." },
-                  { img: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&q=80", title: "ESG-Aligned", body: "Integrating sustainability and community impact into every engagement." },
-                ].map((item, i) => (
-                  <div key={item.title}
-                    className="group relative overflow-hidden border border-white/10 hover:border-[#22c55e]/30 transition-colors"
-                    style={{ transitionDelay: `${i * 80}ms` }}>
-                    {/* Image — lightened: removed heavy gradient overlay */}
-                    <div className="h-32 overflow-hidden relative">
-                      <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      {/* Lightened: was /90 solid → /50 at bottom only */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0d1f3c]/60 to-transparent" />
+                  { title: "Energy & Infrastructure", icon: <Zap />, desc: "Feasibility studies, market entry, and power generation advisory.", img: IMG.svcEnergy },
+                  { title: "Legal & Regulatory", icon: <Shield />, desc: "Compliance, contract negotiations, and regulatory frameworks.", img: IMG.svcLegal },
+                  { title: "Investment & Financial", icon: <Landmark />, desc: "Private equity, financial modeling, and project valuation.", img: IMG.svcFinance },
+                  { title: "Agribusiness", icon: <Leaf />, desc: "Farm-to-market strategies and agri-finance structuring.", img: IMG.svcAgri },
+                  { title: "Logistics & Supply Chain", icon: <Truck />, desc: "Operational optimization for energy and mining sectors.", img: IMG.svcLogistics },
+                ].map((s, i) => (
+                  <motion.div
+                    key={i}
+                    {...fadeInUp}
+                    transition={{ delay: i * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] }}
+                    className="group rounded-[2rem] bg-[#F8FAFC] border border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-slate-100 hover:border-emerald-100 transition-all duration-500 overflow-hidden"
+                  >
+                    {/* Service image */}
+                    <div className="h-40 overflow-hidden">
+                      <img
+                        src={s.img}
+                        className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                        alt={s.title}
+                      />
                     </div>
-                    {/* Text */}
-                    <div className="p-5 bg-[#0d1f3c]">
-                      <h4 className="font-black text-white text-sm mb-1.5" style={{ fontFamily: "'Helvetica Neue',sans-serif" }}>{item.title}</h4>
-                      <p className="text-white/40 text-xs leading-relaxed font-light">{item.body}</p>
+                    <div className="p-8">
+                      <div className="text-emerald-600 mb-4 group-hover:scale-110 transition-transform inline-block">
+                        {s.icon}
+                      </div>
+                      <h3 className="text-lg font-medium text-slate-900 mb-2 group-hover:text-emerald-600 transition-colors">
+                        {s.title}
+                      </h3>
+                      <p className="text-slate-400 text-sm font-light leading-relaxed">{s.desc}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── CTA BANNER ── */}
-        <section className="relative bg-[#22c55e] py-20 px-4 sm:px-6 overflow-hidden">
-          {/* Background image behind green overlay */}
-          <div className="absolute inset-0 z-0">
-            <img
-              src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=1600&q=70"
-              alt="Solar panels"
-              className="w-full h-full object-cover opacity-20"
-            />
-          </div>
-          <div className="absolute inset-0 z-[1] opacity-10"
-            style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-          <div className="relative z-10 max-w-4xl mx-auto text-center">
-            <p className="text-white/70 text-[10px] tracking-[0.4em] uppercase mb-4">— Let's Work Together</p>
-            <h2 className="font-black text-white leading-none mb-6"
-              style={{ fontSize: "clamp(36px,6vw,80px)", fontFamily: "'Helvetica Neue',sans-serif", letterSpacing: "-0.03em" }}>
-              READY TO BUILD<br />AFRICA'S FUTURE?
-            </h2>
-            <p className="text-white/70 text-base font-light mb-10 max-w-xl mx-auto">
-              From solar mini-grids to investment structuring — let's discuss how Energy 4 All can support your next project.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/contact"
-                className="bg-white text-[#22c55e] px-10 py-4 text-[10px] font-black tracking-widest uppercase hover:bg-white/90 transition-colors">
-                Start a Conversation
-              </a>
-              <a href="/services"
-                className="border-2 border-white text-white px-10 py-4 text-[10px] font-black tracking-widest uppercase hover:bg-white/10 transition-colors">
-                Our Services
-              </a>
+        {/* ── SECTION 3: IMPACT STATS
+            Full-bleed IMG.svcWind — wind turbines, cinematic scale.
+            Dark overlay. White stats. Emerald accents.
+            Much more atmospheric than the old opacity-20 treatment.
+        ── */}
+        <section className="relative py-40 overflow-hidden">
+          <img
+            src={IMG.svcWind}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: "50% 60%" }}
+            alt=""
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-slate-900/80" />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ backgroundImage: "radial-gradient(ellipse at 50% 100%, rgba(16,185,129,0.2) 0%, transparent 60%)" }}
+          />
+          <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
+
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <motion.div {...fadeInUp} className="text-center mb-20">
+              <span className="text-emerald-400 font-bold text-[10px] tracking-[0.4em] uppercase mb-4 block">
+                The Scale of Opportunity
+              </span>
+              <h2 className="text-5xl font-light text-white tracking-tighter">
+                Africa's energy gap is{" "}
+                <span className="italic font-serif text-emerald-400">our mandate.</span>
+              </h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+              {[
+                { label: "Energy Deficit", val: "30GW", sub: "Targeting Africa's Power Gap" },
+                { label: "Population Impact", val: "600M+", sub: "People Without Reliable Power" },
+                { label: "Strategy Pillars", val: "05", sub: "Integrated Advisory Sectors" },
+              ].map((stat, i) => (
+                <motion.div
+                  key={i}
+                  {...fadeInUp}
+                  transition={{ delay: i * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] }}
+                  className="p-10 rounded-[2.5rem] border border-white/10 bg-white/5 backdrop-blur-sm"
+                >
+                  <p className="text-[10px] uppercase tracking-[0.4em] text-emerald-400 mb-4">{stat.label}</p>
+                  <h4 className="text-7xl font-light text-white mb-4 tracking-tighter">{stat.val}</h4>
+                  <p className="text-slate-400 text-sm italic font-light">{stat.sub}</p>
+                </motion.div>
+              ))}
             </div>
+          </div>
+        </section>
+
+        {/* ── SECTION 4: CORPORATE IDENTITY — OVERLAPPING IMAGES
+            IMG.team1 (primary portrait) + IMG.aboutSolar (technical).
+            Matches the same overlapping-image pattern used on Market page.
+        ── */}
+        <section className="py-32 bg-white overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+
+              {/* Overlapping images */}
+              <div className="relative order-2 lg:order-1 mb-16">
+                <motion.div
+                  initial={{ x: -80, opacity: 0 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] }}
+                  className="w-4/5 aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl"
+                >
+                  <img src={IMG.aboutOffice} className="w-full h-full object-cover" alt="Energy 4 All office" />
+                </motion.div>
+                <motion.div
+                  initial={{ y: 80, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] }}
+                  className="absolute -bottom-10 -right-6 w-3/5 aspect-square rounded-[2rem] overflow-hidden border-[12px] border-white shadow-2xl"
+                >
+                  <img src={IMG.aboutSolar} className="w-full h-full object-cover" alt="Solar infrastructure" />
+                </motion.div>
+              </div>
+
+              {/* Text */}
+              <motion.div {...fadeInUp} className="order-1 lg:order-2">
+                <span className="text-emerald-600 font-bold text-xs tracking-widest uppercase mb-6 block">
+                  Our Mandate
+                </span>
+                <h2 className="text-5xl font-light tracking-tighter text-slate-900 mb-8 leading-tight">
+                  Driving Innovation <br /> to Deliver{" "}
+                  <span className="italic font-serif text-emerald-600">Energy for All.</span>
+                </h2>
+                <p className="text-slate-500 text-lg font-light leading-relaxed mb-10">
+                  Every community deserves clean, accessible power. At Energy 4 All, expertise meets
+                  innovation to empower stakeholders to scale production and maximize returns across
+                  Africa's most dynamic markets.
+                </p>
+                <div className="flex items-center gap-6">
+                  <div className="h-px w-20 bg-slate-200" />
+                  <a
+                    href="/about"
+                    className="text-xs uppercase tracking-widest font-bold text-slate-900 flex items-center gap-2 group"
+                  >
+                    The Manifesto{" "}
+                    <ArrowUpRight
+                      size={16}
+                      className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+                    />
+                  </a>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── EDITORIAL STRIP: svcOilGas ── */}
+        <div className="px-6 py-4">
+          <div className="max-w-7xl mx-auto">
+            <motion.div {...fadeInUp} className="h-72 rounded-[2.5rem] overflow-hidden relative">
+              <img
+                src={IMG.svcOilGas}
+                className="w-full h-full object-cover"
+                style={{ objectPosition: "50% 50%" }}
+                alt="Oil and gas infrastructure"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-slate-900/20" />
+              <div className="absolute inset-0 flex items-center px-12">
+                <div className="max-w-lg">
+                  <p className="text-emerald-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-3">
+                    Integrated Advisory
+                  </p>
+                  <p className="text-white text-3xl font-light leading-tight tracking-tight">
+                    From energy law compliance to{" "}
+                    <span className="italic font-serif text-emerald-300">
+                      private equity structuring
+                    </span>{" "}
+                    — one firm, end to end.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* ── SECTION 5: TEAM SOCIAL PROOF
+            IMG.aboutTeam as atmospheric background.
+            Shows real people, builds trust. Unique treatment on homepage.
+        ── */}
+        <section className="py-32 px-6 bg-[#F8FAFC]">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+
+              <motion.div {...fadeInUp}>
+                <span className="text-emerald-600 font-bold text-xs tracking-widest uppercase mb-6 block">
+                  Our People
+                </span>
+                <h2 className="text-5xl font-light tracking-tighter text-slate-900 mb-8 leading-tight">
+                  A Multi-Disciplinary <br />
+                  <span className="italic font-serif text-emerald-600">Advisory Powerhouse.</span>
+                </h2>
+                <p className="text-slate-500 text-lg font-light leading-relaxed mb-10">
+                  Legal, Engineering, Finance, and Logistics experts united by a single mission —
+                  powering Africa's future with integrity and technical rigour.
+                </p>
+
+                {/* Team avatar stack */}
+                <div className="flex -space-x-4 mb-10">
+                  {[IMG.team1, IMG.team2, IMG.team3, IMG.team4, IMG.team5].map((img, i) => (
+                    <div
+                      key={i}
+                      className="w-14 h-14 rounded-full border-4 border-[#F8FAFC] overflow-hidden shadow-lg"
+                    >
+                      <img src={img} className="w-full h-full object-cover object-top" alt="Team member" />
+                    </div>
+                  ))}
+                  <div className="w-14 h-14 rounded-full border-4 border-[#F8FAFC] bg-emerald-500 flex items-center justify-center text-white font-bold text-xs shadow-lg">
+                    +20
+                  </div>
+                </div>
+
+                <a
+                  href="/team"
+                  className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-bold text-slate-900 group"
+                >
+                  Meet the Team{" "}
+                  <ArrowUpRight
+                    size={16}
+                    className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+                  />
+                </a>
+              </motion.div>
+
+              {/* Team image with floating stats */}
+              <motion.div
+                initial={{ opacity: 0, x: 60 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] }}
+                className="relative"
+              >
+                <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl">
+                  <img
+                    src={IMG.aboutTeam}
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: "50% 30%" }}
+                    alt="Energy 4 All team"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
+                </div>
+
+                {/* Floating discipline cards */}
+                <div className="absolute bottom-8 left-6 right-6 space-y-3">
+                  {[
+                    { role: "Legal & Regulatory", label: "Energy Law Compliance" },
+                    { role: "Investment & Financial", label: "Private Equity Structuring" },
+                    { role: "Engineering & ESG", label: "HSE Standards Integration" },
+                  ].map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex justify-between items-center bg-white/90 backdrop-blur-sm rounded-xl px-5 py-3"
+                    >
+                      <p className="font-medium text-slate-900 text-sm">{item.role}</p>
+                      <p className="text-[9px] uppercase tracking-widest text-emerald-600 font-bold">
+                        {item.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECTION 6: FINAL CTA
+            IMG.svcHydro as background — water infrastructure, ambition.
+            Dark overlay, emerald glow. Consistent with Market/Team CTA treatment.
+        ── */}
+        <section className="py-24 px-6">
+          <div className="max-w-5xl mx-auto">
+            <motion.div {...fadeInUp} className="relative rounded-[4rem] overflow-hidden">
+              <img
+                src={IMG.svcHydro}
+                className="absolute inset-0 w-full h-full object-cover"
+                alt=""
+                aria-hidden="true"
+              />
+              <div className="absolute inset-0 bg-slate-900/80" />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ backgroundImage: "radial-gradient(circle at 30% 50%, rgba(16,185,129,0.3) 0%, transparent 60%)" }}
+              />
+              <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
+
+              <div className="relative z-10 p-16 md:p-24 text-center">
+                <span className="text-emerald-400 font-bold text-[10px] tracking-[0.4em] uppercase mb-6 block">
+                  Partner With Us
+                </span>
+                <h2 className="text-4xl md:text-6xl font-light mb-6 tracking-tight text-white">
+                  Partner with the leading catalyst <br />
+                  <span className="italic font-serif text-emerald-400">for sustainable growth.</span>
+                </h2>
+                <p className="text-slate-300 font-light mb-10 max-w-xl mx-auto">
+                  Ready to power Africa's future? Our Abuja team is ready to discuss your project,
+                  investment, or strategic goals.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <a
+                    href="/contact"
+                    className="px-12 py-5 bg-emerald-500 text-white rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all"
+                  >
+                    Contact Abuja HQ
+                  </a>
+                  <p className="text-slate-400 font-light text-sm">info@en4al.com</p>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </section>
       </main>
 
       <Footer />
-    </>
+    </div>
   );
 }
