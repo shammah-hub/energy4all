@@ -57,10 +57,11 @@ export default function HomePage() {
                   </span>
                 </motion.div>
 
+                {/* FIX 1: Reduced min clamp from 3rem to 2rem for small screens */}
                 <motion.h1
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-[clamp(3rem,8vw,6.5rem)] font-light leading-[1] tracking-tighter mb-8 text-white"
+                  className="text-[clamp(2rem,8vw,6.5rem)] font-light leading-[1] tracking-tighter mb-8 text-white"
                 >
                   Access to Energy <br />
                   is a{" "}
@@ -246,10 +247,13 @@ export default function HomePage() {
                   key={i}
                   {...fadeInUp}
                   transition={{ delay: i * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] }}
-                  className="p-10 rounded-[2.5rem] border border-white/10 bg-white/5 backdrop-blur-sm"
+                  
+                  /* FIX 3: Reduced the padding from p-10 to p-6 md:p-10 for mobile */ 
+                  className="p-6 md:p-10 rounded-[2.5rem] border border-white/10 bg-white/5 backdrop-blur-sm"
                 >
                   <p className="text-[10px] uppercase tracking-[0.4em] text-emerald-400 mb-4">{stat.label}</p>
-                  <h4 className="text-7xl font-light text-white mb-4 tracking-tighter">{stat.val}</h4>
+                  {/* FIX 3: Reduced stat number from text-7xl to text-5xl md:text-7xl for mobile */}
+                  <h4 className="text-5xl md:text-7xl font-light text-white mb-4 tracking-tighter">{stat.val}</h4>
                   <p className="text-slate-400 text-sm italic font-light">{stat.sub}</p>
                 </motion.div>
               ))}
@@ -266,7 +270,8 @@ export default function HomePage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
 
               {/* Overlapping images */}
-              <div className="relative order-2 lg:order-1 mb-16">
+              {/* FIX 1: Increased bottom margin from mb-16 to mb-32 lg:mb-16 to prevent clipping on mobile */}
+              <div className="relative order-2 lg:order-1 mb-32 lg:mb-16">
                 <motion.div
                   initial={{ x: -80, opacity: 0 }}
                   whileInView={{ x: 0, opacity: 1 }}
@@ -330,7 +335,8 @@ export default function HomePage() {
                 alt="Oil and gas infrastructure"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-slate-900/20" />
-              <div className="absolute inset-0 flex items-center px-12">
+              {/* FIX 5: Reduced horizontal padding from px-12 to px-6 md:px-12 for mobile */}
+              <div className="absolute inset-0 flex items-center px-6 md:px-12">
                 <div className="max-w-lg">
                   <p className="text-emerald-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-3">
                     Integrated Advisory
@@ -457,7 +463,8 @@ export default function HomePage() {
               />
               <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
 
-              <div className="relative z-10 p-16 md:p-24 text-center">
+              {/* FIX 4: Reduced padding from p-16 md:p-24 to p-8 md:p-16 lg:p-24 for mobile */}
+              <div className="relative z-10 p-8 md:p-16 lg:p-24 text-center">
                 <span className="text-emerald-400 font-bold text-[10px] tracking-[0.4em] uppercase mb-6 block">
                   Partner With Us
                 </span>
