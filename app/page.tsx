@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { Navbar, Footer, IMG, SERVICES } from "@/components/shared";
+import { Navbar, Footer, IMG, } from "@/components/shared";
 import { ArrowUpRight, Shield, Landmark, Truck, Leaf, Zap, CheckCircle2 } from "lucide-react";
 
 const fadeInUp = {
